@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Descarga Cazaladrones: Detective</title>
+<meta name="description" content="Resuelve el misterio, analiza las pistas y encuentra al culpable. Descarga Cazaladrones: Detective en el App Store.">
+<meta name="apple-itunes-app" content="app-id=6790215107">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b1f4d">
+<link rel="icon" href="https://cdn.finolid.net/cazaladrones.png">
+<link rel="apple-touch-icon" href="https://cdn.finolid.net/cazaladrones.png">
+<style>
+  :root {
+    --bg-dark: #0b1f4d;
+    --bg-darker: #071633;
+    --accent-yellow: #ffc93c;
+    --accent-yellow-dark: #e6ab00;
+    --card-bg: #ffffff;
+    --text-dark: #1b1b2f;
+    --text-muted: #5a5a6e;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #123069 0%, var(--bg-dark) 45%, var(--bg-darker) 100%);
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: var(--accent-yellow);
+    opacity: 0.15;
+    filter: blur(2px);
+  }
+
+  body::before {
+    width: 180px;
+    height: 180px;
+    top: -60px;
+    left: -60px;
+  }
+
+  body::after {
+    width: 240px;
+    height: 240px;
+    bottom: -80px;
+    right: -80px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    max-width: 420px;
+    width: 100%;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    position: relative;
+    z-index: 1;
+    border-top: 6px solid var(--accent-yellow);
+  }
+
+  .app-icon {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 12px;
+    color: var(--bg-dark);
+  }
+
+  p.description {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 28px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background: var(--accent-yellow);
+    color: var(--bg-darker);
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cta-button:active {
+    transform: scale(0.97);
+    background: var(--accent-yellow-dark);
+  }
+
+  .secondary-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--bg-dark);
+    font-size: 0.9rem;
+    text-decoration: underline;
+    opacity: 0.75;
+  }
+
+  .secondary-link:hover { opacity: 1; }
+
+  .notice {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #fff7e0;
+    border: 1px solid var(--accent-yellow);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #6b5400;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .platform-note {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .android-box {
+    background: #eef2fb;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 4px;
+  }
+
+  .android-box p {
+    margin: 0 0 10px;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+  }
+
+  .qr-wrap {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .qr-wrap canvas {
+    border-radius: 8px;
+    border: 1px solid #e5e5ef;
+    padding: 8px;
+    background: #fff;
+  }
+
+  .qr-caption {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .hidden { display: none !important; }
+
+  .footer-note {
+    margin-top: 24px;
+    font-size: 0.72rem;
+    color: #9a9aa8;
+  }
+
+  @media (max-width: 380px) {
+    .card { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+  <main class="card" role="main">
+    <img class="app-icon" src="https://cdn.finolid.net/cazaladrones.png" alt="" width="96" height="96">
+    <h1 id="title">Descarga Cazaladrones</h1>
+    <p class="description" id="description">Resuelve el misterio, analiza las pistas y encuentra al culpable.</p>
+
+    <div id="ios-block" class="hidden">
+      <a href="#" id="ios-cta" class="cta-button" role="button">
+        <span id="ios-cta-label">Abrir en el App Store</span>
+      </a>
+      <a href="#" id="ios-web-link" class="secondary-link" target="_blank" rel="noopener">
+        Abrir página web del App Store
+      </a>
+      <p id="instagram-notice" class="notice hidden"></p>
+    </div>
+
+    <div id="android-block" class="hidden">
+      <div class="android-box">
+        <p id="android-message"></p>
+      </div>
+    </div>
+
+    <div id="desktop-block" class="hidden">
+      <a href="#" id="desktop-link" class="cta-button" target="_blank" rel="noopener">
+        <span id="desktop-cta-label">Ver en el App Store</span>
+      </a>
+      <div class="qr-wrap">
+        <canvas id="qr-canvas" width="140" height="140" aria-hidden="true"></canvas>
+        <span class="qr-caption" id="qr-caption">Escanea para abrir esta página en tu iPhone</span>
+      </div>
+    </div>
+
+    <p class="footer-note" id="footer-note"></p>
+  </main>
+
+  <script src="qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
