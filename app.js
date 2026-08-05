@@ -18,10 +18,12 @@
       description: "Resuelve el misterio, analiza las pistas y encuentra al culpable.",
       iosCta: "Abrir en el App Store",
       iosWebLink: "Abrir página web del App Store",
-      instagramNotice: "Si Instagram no abre el App Store, toca ··· y selecciona Abrir en el navegador.",
+      instagramNotice: "Instagram bloquea la apertura directa del App Store. Toca ··· (arriba) y selecciona Abrir en el navegador, o copia el enlace y pégalo en Safari.",
       androidMessage: "Cazaladrones está disponible actualmente para iPhone y iPad.",
       desktopCta: "Ver en el App Store",
       qrCaption: "Escanea para abrir esta página en tu iPhone",
+      copyLink: "Copiar enlace",
+      copyLinkDone: "Enlace copiado",
       lang: "es"
     },
     en: {
@@ -29,10 +31,12 @@
       description: "Solve the mystery, analyze the clues, and find the culprit.",
       iosCta: "Open in the App Store",
       iosWebLink: "Open App Store web page",
-      instagramNotice: "If Instagram doesn't open the App Store, tap ··· and select Open in browser.",
+      instagramNotice: "Instagram blocks opening the App Store directly. Tap ··· (top) and choose Open in browser, or copy the link and paste it into Safari.",
       androidMessage: "Cazaladrones is currently available for iPhone and iPad.",
       desktopCta: "View on the App Store",
       qrCaption: "Scan to open this page on your iPhone",
+      copyLink: "Copy link",
+      copyLinkDone: "Link copied",
       lang: "en"
     }
   };
@@ -55,8 +59,11 @@
     return APP_STORE_HTTPS_BASE + (qs ? "?" + qs : "");
   }
 
+  var currentStrings = STRINGS.es;
+
   function applyStrings(locale) {
     var s = STRINGS[locale];
+    currentStrings = s;
     document.documentElement.lang = s.lang;
     document.getElementById("title").textContent = s.title;
     document.getElementById("description").textContent = s.description;
@@ -65,6 +72,7 @@
     document.getElementById("android-message").textContent = s.androidMessage;
     document.getElementById("desktop-cta-label").textContent = s.desktopCta;
     document.getElementById("qr-caption").textContent = s.qrCaption;
+    document.getElementById("copy-link-label").textContent = s.copyLink;
 
     if (isInstagram) {
       var notice = document.getElementById("instagram-notice");
@@ -80,45 +88,99 @@
     var webLink = document.getElementById("ios-web-link");
 
     webLink.href = appStoreUrl;
-    cta.href = appStoreUrl;
 
-    cta.addEventListener("click", function (event) {
-      event.preventDefault();
+    if (isInstagram) {
+      // Instagram's in-app WebView silently drops itms-apps:// and JS
+      // redirects, and actively blocks attempts to escape to Safari.
+      // The only things that reliably work are a genuine <a href> tap
+      // (best chance at a Universal Link handoff) and a manual copy-link
+      // fallback, so we skip the itms-apps:// attempt entirely here.
+      cta.href = appStoreUrl;
+      cta.removeAttribute("role");
+      setupCopyLink(appStoreUrl);
+    } else {
+      cta.href = appStoreUrl;
+      cta.addEventListener("click", function (event) {
+        event.preventDefault();
 
-      var fallbackTimer = null;
-      var didHide = false;
+        var fallbackTimer = null;
+        var didHide = false;
 
-      function cancelFallback() {
-        didHide = true;
-        if (fallbackTimer) {
-          clearTimeout(fallbackTimer);
-          fallbackTimer = null;
+        function cancelFallback() {
+          didHide = true;
+          if (fallbackTimer) {
+            clearTimeout(fallbackTimer);
+            fallbackTimer = null;
+          }
+          document.removeEventListener("visibilitychange", onHide);
+          window.removeEventListener("pagehide", onHide);
+          window.removeEventListener("blur", onHide);
         }
-        document.removeEventListener("visibilitychange", onHide);
-        window.removeEventListener("pagehide", onHide);
-        window.removeEventListener("blur", onHide);
-      }
 
-      function onHide() {
-        if (document.hidden || document.visibilityState === "hidden") {
-          cancelFallback();
+        function onHide() {
+          if (document.hidden || document.visibilityState === "hidden") {
+            cancelFallback();
+          }
         }
-      }
 
-      document.addEventListener("visibilitychange", onHide);
-      window.addEventListener("pagehide", onHide);
-      window.addEventListener("blur", onHide);
+        document.addEventListener("visibilitychange", onHide);
+        window.addEventListener("pagehide", onHide);
+        window.addEventListener("blur", onHide);
 
-      fallbackTimer = setTimeout(function () {
-        if (!didHide && !document.hidden) {
-          window.location.href = appStoreUrl;
-        }
-      }, FALLBACK_DELAY_MS);
+        fallbackTimer = setTimeout(function () {
+          if (!didHide && !document.hidden) {
+            window.location.href = appStoreUrl;
+          }
+        }, FALLBACK_DELAY_MS);
 
-      window.location.href = ITMS_URL;
-    });
+        window.location.href = ITMS_URL;
+      });
+    }
 
     block.classList.remove("hidden");
+  }
+
+  function setupCopyLink(url) {
+    var btn = document.getElementById("copy-link-btn");
+    var label = document.getElementById("copy-link-label");
+    btn.classList.remove("hidden");
+
+    btn.addEventListener("click", function () {
+      copyToClipboard(url).then(function () {
+        label.textContent = currentStrings.copyLinkDone;
+        setTimeout(function () {
+          label.textContent = currentStrings.copyLink;
+        }, 2000);
+      });
+    });
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        return legacyCopy(text);
+      });
+    }
+    return legacyCopy(text);
+  }
+
+  function legacyCopy(text) {
+    return new Promise(function (resolve) {
+      var textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try {
+        document.execCommand("copy");
+      } catch (e) {
+        // ignore — nothing more we can do
+      }
+      document.body.removeChild(textarea);
+      resolve();
+    });
   }
 
   function setupAndroid() {

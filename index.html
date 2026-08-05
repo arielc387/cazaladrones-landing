@@ -135,6 +135,16 @@
 
   .secondary-link:hover { opacity: 1; }
 
+  .copy-btn {
+    background: none;
+    border: none;
+    font: inherit;
+    padding: 0;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+  }
+
   .notice {
     margin-top: 20px;
     padding: 12px 16px;
@@ -206,13 +216,16 @@
     <p class="description" id="description">Resuelve el misterio, analiza las pistas y encuentra al culpable.</p>
 
     <div id="ios-block" class="hidden">
+      <p id="instagram-notice" class="notice hidden"></p>
       <a href="#" id="ios-cta" class="cta-button" role="button">
         <span id="ios-cta-label">Abrir en el App Store</span>
       </a>
       <a href="#" id="ios-web-link" class="secondary-link" target="_blank" rel="noopener">
         Abrir página web del App Store
       </a>
-      <p id="instagram-notice" class="notice hidden"></p>
+      <button type="button" id="copy-link-btn" class="secondary-link copy-btn hidden">
+        <span id="copy-link-label">Copiar enlace</span>
+      </button>
     </div>
 
     <div id="android-block" class="hidden">

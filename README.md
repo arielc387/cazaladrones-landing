@@ -15,8 +15,8 @@ Landing page estática, sin frameworks, para reemplazar el Deepview de Branch al
    - Si la página sigue visible ~900 ms después (la app no se abrió), se redirige a `https://apps.apple.com/mx/app/cazaladrones-detective/id6790215107`.
    - Los eventos `visibilitychange`, `pagehide` y `blur` cancelan el fallback si el App Store (o la app) se abrió.
    - Se muestra además un enlace HTTPS visible "Abrir página web del App Store".
-   - Si el user agent contiene `Instagram`, se muestra un aviso indicando cómo abrir en el navegador externo (menú `···` → "Abrir en el navegador").
-   - Se incluye el Smart App Banner `<meta name="apple-itunes-app" content="app-id=6790215107">`.
+   - Si el user agent contiene `Instagram`, se omite por completo el intento con `itms-apps://` (Instagram lo bloquea en silencio y consume el gesto del usuario sin efecto). En su lugar, el botón navega directamente con un `<a href>` real al enlace HTTPS del App Store (mejor oportunidad de que iOS intercepte el Universal Link), se muestra de forma prominente el aviso "toca ··· y selecciona Abrir en el navegador", y aparece un botón **"Copiar enlace"** (Clipboard API con fallback a `execCommand`) para que el usuario pueda pegarlo manualmente en Safari — el único método 100% confiable dentro del WebView de Instagram.
+   - Se incluye el Smart App Banner `<meta name="apple-itunes-app" content="app-id=6790215107">` (solo tiene efecto en Safari real, no dentro del WebView de Instagram).
 4. **Android**: se muestra un mensaje indicando que la app está disponible actualmente solo para iPhone y iPad. No se intenta abrir Google Play.
 5. **Escritorio**: se muestra el enlace al App Store y un código QR generado 100% en el cliente (sin servicios externos) que apunta a la URL publicada de esta página, usando la librería vendorizada `qrcode.min.js` ([qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), MIT, Kazuhiko Arase).
 6. **Parámetros de campaña**: si la URL de la landing incluye `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `ct`, `pt` o `mt`, se reenvían tal cual al enlace del App Store.
@@ -53,6 +53,7 @@ gh api -X PUT repos/<owner>/cazaladrones-landing/pages \
 
 ## Limitaciones conocidas del WebView de Instagram
 
-- El WebView interno de Instagram (basado en un motor restringido) a veces bloquea o ignora redirecciones a esquemas personalizados (`itms-apps://`) e incluso a enlaces HTTPS directos al App Store, dependiendo de la versión de la app y del sistema operativo.
-- Por eso se muestra siempre el enlace HTTPS visible como alternativa manual, y un aviso que indica al usuario abrir la página en el navegador externo mediante el menú `···` cuando se detecta Instagram por user agent.
-- No es posible detectar de forma fiable, solo con JavaScript, si el intento de apertura de `itms-apps://` fue bloqueado silenciosamente por el WebView (a diferencia de que el usuario simplemente no tenga la app instalada); el fallback de 900 ms es una heurística, no una garantía.
+- El WebView interno de Instagram (WKWebView restringido) bloquea en silencio los esquemas personalizados como `itms-apps://`, y también intercepta/bloquea activamente los trucos habituales para "escapar" (`window.open`, `target="_blank"`, `location.href` a otro dominio), a diferencia de Safari o Chrome iOS. Esto está documentado ampliamente y no depende de nuestro código — es una restricción del lado de Instagram.
+- Por eso, cuando se detecta Instagram, la landing **no** intenta `itms-apps://` (perdería el gesto del usuario sin efecto). En su lugar prioriza: 1) un `<a href>` real hacia el enlace HTTPS del App Store (para darle a iOS la mejor oportunidad de interceptar el Universal Link), 2) un aviso visible antes del tap indicando usar el menú `···` → "Abrir en el navegador", y 3) un botón "Copiar enlace" como alternativa 100% confiable.
+- El Smart App Banner (`apple-itunes-app`) solo lo renderiza Safari real; no aparece dentro del WebView de Instagram.
+- No hay forma, solo con JavaScript, de forzar a Instagram a entregar la navegación a Safari — Apple no ofrece una API pública equivalente al esquema `intent://` de Android. La combinación de enlace real + copiar enlace + instrucción manual es, según la documentación pública disponible en 2026, el método más confiable sin depender de servicios de terceros.
