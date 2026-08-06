@@ -91,12 +91,14 @@
 
     if (isInstagram) {
       // Instagram's in-app WebView silently drops itms-apps:// and JS
-      // redirects, and actively blocks attempts to escape to Safari.
-      // The only things that reliably work are a genuine <a href> tap
-      // (best chance at a Universal Link handoff) and a manual copy-link
-      // fallback, so we skip the itms-apps:// attempt entirely here.
+      // redirects, and actively blocks attempts to escape to Safari, so
+      // both the primary CTA and the secondary web link would fail the
+      // same way. Hide the redundant secondary link and instead give the
+      // copy-link fallback — the only thing that reliably works here —
+      // equal visual weight to the primary CTA.
       cta.href = appStoreUrl;
       cta.removeAttribute("role");
+      webLink.classList.add("hidden");
       setupCopyLink(appStoreUrl);
     } else {
       cta.href = appStoreUrl;

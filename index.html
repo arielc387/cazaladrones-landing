@@ -135,14 +135,29 @@
 
   .secondary-link:hover { opacity: 1; }
 
-  .copy-btn {
-    background: none;
-    border: none;
-    font: inherit;
-    padding: 0;
-    display: block;
+  .secondary-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
+    background: transparent;
+    color: var(--bg-dark);
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 14px 20px;
+    margin-top: 12px;
+    border-radius: 14px;
+    border: 2px solid var(--bg-dark);
     cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .secondary-cta-button:active {
+    transform: scale(0.97);
+    background: rgba(11, 31, 77, 0.08);
   }
 
   .notice {
@@ -223,7 +238,7 @@
       <a href="#" id="ios-web-link" class="secondary-link" target="_blank" rel="noopener">
         Abrir página web del App Store
       </a>
-      <button type="button" id="copy-link-btn" class="secondary-link copy-btn hidden">
+      <button type="button" id="copy-link-btn" class="secondary-cta-button hidden">
         <span id="copy-link-label">Copiar enlace</span>
       </button>
     </div>
